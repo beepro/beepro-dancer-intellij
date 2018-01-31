@@ -21,7 +21,7 @@
     -->
 
 	<extensions defaultExtensionNs="com.intellij">
-		<toolWindow id="Websocket Client" anchor="bottom" icon="/icons/nabee.png"
+		<toolWindow id="beepro" anchor="bottom" icon="/icons/nabee16x16.png"
 					factoryClass="org.koiki.beepro.dancer.intellij.ui.MainToolWindowFactory" />
 	</extensions>
 
