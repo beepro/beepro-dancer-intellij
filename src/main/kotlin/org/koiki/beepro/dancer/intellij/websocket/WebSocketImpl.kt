@@ -6,8 +6,6 @@ import java.net.URI
 import javax.websocket.*
 import javax.websocket.OnMessage
 
-
-
 @ClientEndpoint
 class WebSocketImpl : WebSocketInterface {
     private val log = Logger.getInstance(this::class.java)

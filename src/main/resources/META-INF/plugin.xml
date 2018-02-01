@@ -23,6 +23,8 @@
 	<extensions defaultExtensionNs="com.intellij">
 		<toolWindow id="beepro" anchor="bottom" icon="/icons/nabee16x16.png"
 					factoryClass="org.koiki.beepro.dancer.intellij.ui.MainToolWindowFactory" />
+
+		<typedHandler implementation="org.koiki.beepro.dancer.intellij.listener.TypedEventHandlerDelegate"/>
 	</extensions>
 
     <application-components>
@@ -32,6 +34,10 @@
     </project-components>
 
     <actions>
+		<action id="TypedEventIllustration" class="org.koiki.beepro.dancer.intellij.listener.TypedEventIllustration" text="TypedEventIllustration"
+				description="TypedEventIllustration">
+			<add-to-group group-id="EditorPopupMenu" anchor="first"/>
+		</action>
 	</actions>
 
 </idea-plugin>
