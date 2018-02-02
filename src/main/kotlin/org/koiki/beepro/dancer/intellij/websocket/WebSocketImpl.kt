@@ -33,6 +33,11 @@ class WebSocketImpl : WebSocketInterface {
         session?.asyncRemote?.sendObject("KEEPALIVE")
     }
 
+    fun close() {
+        session?.close()
+        log.info("session closed")
+    }
+
     @OnOpen
     fun onOpen(session: Session) {
         log.info("WebSocket connection is established, session: $session")

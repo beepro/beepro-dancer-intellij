@@ -23,23 +23,29 @@ class MainToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         log.info("factory starts")
 
-
+        val webSocketImpl = WebSocketImpl()
         val bus = project.messageBus
-        bus.connect().subscribe(WebSocketInterface.CONNECTED_TOPIC, WebSocketImpl())
+        bus.connect().subscribe(WebSocketInterface.CONNECTED_TOPIC, webSocketImpl)
 
         val label = JLabel("Hello World!")
 
         val textField = JTextField(8)
         textField.setFont(Font("ＭＳ ゴシック", Font.BOLD, 16))
 
-        val button = JButton()
+        val button = JButton("connect")
         button.addActionListener(ConnectButtonListener(textField, project))
+
+        val closeButton = JButton("close")
+        closeButton.addActionListener({
+            webSocketImpl.close()
+        })
 
         val jPanel = JPanel()
         jPanel.add(label)
         jPanel.setBackground(Color.RED)
         jPanel.add(textField)
         jPanel.add(button)
+        jPanel.add(closeButton)
 
         val contentManager = toolWindow.contentManager
         val content = contentManager.factory.createContent(jPanel, null, false)
