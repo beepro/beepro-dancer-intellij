@@ -2,7 +2,9 @@ package org.koiki.beepro.dancer.intellij.websocket
 
 import org.glassfish.tyrus.client.ClientManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.util.concurrency.AppExecutorUtil
 import java.net.URI
+import java.util.concurrent.TimeUnit
 import javax.websocket.*
 import javax.websocket.OnMessage
 
@@ -19,6 +21,16 @@ class WebSocketImpl : WebSocketInterface {
         //val container = ContainerProvider.getWebSocketContainer()
         //container.connectToServer(this, websocketUri)
         client.connectToServer(this, websocketUri)
+
+        AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay(
+                {
+                    this.keepAlive()
+                }, 1, 5, TimeUnit.SECONDS)
+    }
+
+    fun keepAlive() {
+        log.info("sending keepalive")
+        session?.asyncRemote?.sendObject("KEEPALIVE")
     }
 
     @OnOpen

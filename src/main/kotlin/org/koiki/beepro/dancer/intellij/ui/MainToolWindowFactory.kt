@@ -12,6 +12,10 @@ import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
+import javax.xml.datatype.DatatypeConstants.SECONDS
+import com.intellij.util.concurrency.AppExecutorUtil
+import java.util.concurrent.TimeUnit
+
 
 class MainToolWindowFactory : ToolWindowFactory {
     private val log = Logger.getInstance(this::class.java)
