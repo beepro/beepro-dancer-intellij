@@ -1,8 +1,12 @@
 package org.koiki.beepro.dancer.intellij.websocket
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.glassfish.tyrus.client.ClientManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.concurrency.AppExecutorUtil
+import org.koiki.beepro.dancer.intellij.websocket.message.JoinMessage
+import org.koiki.beepro.dancer.intellij.websocket.message.Message
+import org.koiki.beepro.dancer.intellij.websocket.message.User
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
@@ -12,6 +16,7 @@ import javax.websocket.OnMessage
 class WebSocketImpl : WebSocketInterface {
     private val log = Logger.getInstance(this::class.java)
     private var session: Session? = null
+    private val objectMapper = ObjectMapper()
 
     override fun connect(uri: String) {
         log.info("I got notification by clicking button!, value: $uri")
@@ -22,13 +27,21 @@ class WebSocketImpl : WebSocketInterface {
         //container.connectToServer(this, websocketUri)
         client.connectToServer(this, websocketUri)
 
+        sendMessage(JoinMessage(user = User(id = "ninja", icon = "hoge.png")))
+
         AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay(
                 {
                     this.keepAlive()
                 }, 1, 5, TimeUnit.SECONDS)
     }
 
-    fun keepAlive() {
+    fun sendMessage(message: Message) {
+        log.info("send message: ${objectMapper.writeValueAsString(message)}")
+
+        session?.asyncRemote?.sendObject(objectMapper.writeValueAsString(message))
+    }
+
+    private fun keepAlive() {
         log.info("sending keepalive")
         session?.asyncRemote?.sendObject("KEEPALIVE")
     }
