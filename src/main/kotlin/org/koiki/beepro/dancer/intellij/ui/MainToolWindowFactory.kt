@@ -26,6 +26,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.sun.javafx.scene.CameraHelper.project
 import com.intellij.util.messages.MessageBus
+import org.koiki.beepro.dancer.intellij.websocket.message.Change
 
 
 class MainToolWindowFactory : ToolWindowFactory {
@@ -65,11 +66,16 @@ class MainToolWindowFactory : ToolWindowFactory {
 
                         document?.addDocumentListener(object : DocumentListener {
                             override fun beforeDocumentChange(event: DocumentEvent) {
+                                // line number (starts from 0)
+                                log.info("document.getLineNumber(event.offset): ${document.getLineNumber(event.offset)}")
                                 log.info("beforeDocumentChange, event: ${event}")
+
+                                val change = Change(event)
+                                log.info("row: ${change.row}, col: ${change.col}")
                             }
 
                             override fun documentChanged(event: DocumentEvent) {
-                                log.info("documentChanged")
+                                //log.info("documentChanged, event: ${event}")
                             }
                         })
 
