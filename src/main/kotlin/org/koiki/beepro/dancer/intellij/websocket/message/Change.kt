@@ -10,30 +10,40 @@ class Change {
     val row: Int
     val col: Int
 
-    constructor(event: DocumentEvent) {
+    constructor(event: DocumentEvent, changeType: ChangeType) {
         val document = event.document
-        val offset = event.offset + event.oldLength
 
-        var row = 0
-        var tmpCol = 0
+        if (event.newLength > 0) {
+            val offset = event.offset
 
-        // inputting something
-        //if (event.newLength > 0) {
-
-            while (row != document.getLineNumber(offset)) {
-                //log.info("document.getLineEndOffset($row): ${document.getLineEndOffset(row)}")
-                tmpCol = offset - document.getLineEndOffset(row) - 1
-                row++
-            }
+            val row = document.getLineNumber(offset)
+            val col = if (row == 0) offset else offset - document.getLineEndOffset(row - 1)
 
             this.row = row
-            this.col = tmpCol
+            this.col = col
 
-        // removing something
-        //} else {
+        } else if (changeType == ChangeType.from) {
+            val offset = event.offset
 
-        //    this.row = row
-        //    this.col = tmpCol
-        //}
+            val row = document.getLineNumber(offset)
+            val col = if (row == 0) offset else offset - document.getLineEndOffset(row - 1)
+
+            this.row = row
+            this.col = col
+
+        } else {
+            val offset = event.offset + event.oldLength
+
+            val row = document.getLineNumber(offset)
+            val col = if (row == 0) offset else offset - document.getLineEndOffset(row - 1)
+
+            this.row = row
+            this.col = col
+        }
     }
+}
+
+enum class ChangeType {
+    from,
+    to
 }

@@ -27,6 +27,7 @@ import com.intellij.psi.PsiManager
 import com.sun.javafx.scene.CameraHelper.project
 import com.intellij.util.messages.MessageBus
 import org.koiki.beepro.dancer.intellij.websocket.message.Change
+import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
 
 
 class MainToolWindowFactory : ToolWindowFactory {
@@ -70,8 +71,10 @@ class MainToolWindowFactory : ToolWindowFactory {
                                 log.info("document.getLineNumber(event.offset): ${document.getLineNumber(event.offset)}")
                                 log.info("beforeDocumentChange, event: ${event}")
 
-                                val change = Change(event)
-                                log.info("row: ${change.row}, col: ${change.col}")
+                                val changeFrom = Change(event, ChangeType.from)
+                                val changeTo = Change(event, ChangeType.to)
+                                log.info("changeFrom row: ${changeFrom.row}, col: ${changeFrom.col}")
+                                log.info("changeTo   row: ${changeTo.row}, col: ${changeTo.col}")
                             }
 
                             override fun documentChanged(event: DocumentEvent) {
