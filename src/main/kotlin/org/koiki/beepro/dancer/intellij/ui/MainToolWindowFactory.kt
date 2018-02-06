@@ -24,6 +24,7 @@ import com.intellij.openapi.fileEditor.FileEditorManagerAdapter
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
+import com.intellij.util.containers.stream
 import com.sun.javafx.scene.CameraHelper.project
 import com.intellij.util.messages.MessageBus
 import org.koiki.beepro.dancer.intellij.websocket.message.Change
@@ -35,6 +36,11 @@ class MainToolWindowFactory : ToolWindowFactory {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         log.info("factory starts")
+
+        log.info("project.workspaceFile: ${project.workspaceFile}")
+
+        // fetching all opened files when idea starts up
+        FileEditorManager.getInstance(project).openFiles.stream().forEach {file -> log.info("openedFile: ${file}")}
 
         val messageBus = project.messageBus
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, object : FileEditorManagerListener {
@@ -65,6 +71,7 @@ class MainToolWindowFactory : ToolWindowFactory {
 
                         log.info("document found, ${document}")
 
+                        // TODO same listener will be registered every time file is selected
                         document?.addDocumentListener(object : DocumentListener {
                             override fun beforeDocumentChange(event: DocumentEvent) {
                                 // line number (starts from 0)
