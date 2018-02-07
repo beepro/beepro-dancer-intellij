@@ -27,6 +27,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.util.containers.stream
 import com.sun.javafx.scene.CameraHelper.project
 import com.intellij.util.messages.MessageBus
+import org.koiki.beepro.dancer.intellij.listener.MyFileEditorManagerListener
 import org.koiki.beepro.dancer.intellij.websocket.message.Change
 import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
 
@@ -43,61 +44,7 @@ class MainToolWindowFactory : ToolWindowFactory {
         FileEditorManager.getInstance(project).openFiles.stream().forEach {file -> log.info("openedFile: ${file}")}
 
         val messageBus = project.messageBus
-        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, object : FileEditorManagerListener {
-            // this works when file opens so this does not work for opened file
-            override fun fileOpened(source: FileEditorManager, vFile: VirtualFile) {
-                //super.fileOpened(source, file)
-            }
-
-            override fun fileClosed(source: FileEditorManager, vFile: VirtualFile) {
-                log.info("fileClosed")
-                //super.fileClosed(source, file)
-            }
-
-            override fun selectionChanged(event: FileEditorManagerEvent) {
-                log.info("selectionChanged")
-
-                val vFile = event.newFile
-
-                if (vFile != null) {
-                    log.info("vFile: ${vFile}")
-                    val psiFile = PsiManager.getInstance(project).findFile(vFile)
-                    if (psiFile != null) {
-                        log.info("psiFile found, ${psiFile}")
-                        val document = PsiDocumentManager.getInstance(project).getDocument(psiFile)
-
-                        if (document == null)
-                            log.info("document is null")
-
-                        log.info("document found, ${document}")
-
-                        // TODO same listener will be registered every time file is selected
-                        document?.addDocumentListener(object : DocumentListener {
-                            override fun beforeDocumentChange(event: DocumentEvent) {
-                                // line number (starts from 0)
-                                log.info("document.getLineNumber(event.offset): ${document.getLineNumber(event.offset)}")
-                                log.info("beforeDocumentChange, event: ${event}")
-
-                                val changeFrom = Change(event, ChangeType.from)
-                                val changeTo = Change(event, ChangeType.to)
-                                log.info("changeFrom row: ${changeFrom.row}, col: ${changeFrom.col}")
-                                log.info("changeTo   row: ${changeTo.row}, col: ${changeTo.col}")
-                            }
-
-                            override fun documentChanged(event: DocumentEvent) {
-                                //log.info("documentChanged, event: ${event}")
-                            }
-                        })
-
-                    } else {
-                        log.info("psi file was not found")
-                    }
-                } else {
-                    log.info("vFile not found")
-                }
-                //super.selectionChanged(event)
-            }
-        })
+        messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, MyFileEditorManagerListener(project))
 
         val webSocketImpl = WebSocketImpl()
         val bus = project.messageBus
