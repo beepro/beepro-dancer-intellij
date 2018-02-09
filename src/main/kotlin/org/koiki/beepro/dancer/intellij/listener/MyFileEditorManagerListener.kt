@@ -48,8 +48,9 @@ class MyFileEditorManagerListener : FileEditorManagerListener {
 
                 log.info("document found, ${document}")
 
-                // TODO same listener will be registered every time file is selected
-                document?.addDocumentListener(MyDocumentListener())
+                //TODO this should be improved
+                document?.removeDocumentListener(MyDocumentListenerFactory.getInstance())
+                document?.addDocumentListener(MyDocumentListenerFactory.getInstance())
 
             } else {
                 log.info("psi file was not found")

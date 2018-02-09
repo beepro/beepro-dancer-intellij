@@ -9,6 +9,9 @@ import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
 class MyDocumentListener : DocumentListener {
     private val log = Logger.getInstance(this::class.java)
 
+    //TODO this should be accessed from package
+    protected constructor() {}
+
     override fun beforeDocumentChange(event: DocumentEvent) {
         val document = event.document
 
