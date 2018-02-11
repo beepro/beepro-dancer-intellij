@@ -13,7 +13,7 @@ import javax.websocket.*
 import javax.websocket.OnMessage
 
 @ClientEndpoint
-class WebSocketImpl : WebSocketInterface {
+class WebSocketClient : WebSocketOperation {
     private val log = Logger.getInstance(this::class.java)
     private var session: Session? = null
     private val objectMapper = ObjectMapper()

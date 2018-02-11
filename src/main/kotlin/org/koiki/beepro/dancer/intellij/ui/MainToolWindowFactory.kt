@@ -1,35 +1,21 @@
 package org.koiki.beepro.dancer.intellij.ui
 
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.event.DocumentEvent
-import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import org.koiki.beepro.dancer.intellij.websocket.WebSocketImpl
-import org.koiki.beepro.dancer.intellij.websocket.WebSocketInterface
+import org.koiki.beepro.dancer.intellij.websocket.WebSocketOperation
 import java.awt.Color
 import java.awt.Font
 import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JTextField
-import javax.xml.datatype.DatatypeConstants.SECONDS
-import com.intellij.util.concurrency.AppExecutorUtil
-import java.util.concurrent.TimeUnit
-import com.intellij.openapi.fileEditor.FileEditorManagerEvent
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.fileEditor.FileEditorManager
-import com.intellij.openapi.fileEditor.FileEditorManagerAdapter
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiManager
 import com.intellij.util.containers.stream
-import com.sun.javafx.scene.CameraHelper.project
-import com.intellij.util.messages.MessageBus
 import org.koiki.beepro.dancer.intellij.listener.MyFileEditorManagerListener
-import org.koiki.beepro.dancer.intellij.websocket.message.Change
-import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
+import org.koiki.beepro.dancer.intellij.websocket.WebSocketClientFactory
 
 
 class MainToolWindowFactory : ToolWindowFactory {
@@ -46,9 +32,9 @@ class MainToolWindowFactory : ToolWindowFactory {
         val messageBus = project.messageBus
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, MyFileEditorManagerListener(project))
 
-        val webSocketImpl = WebSocketImpl()
+        val webSocketClient = WebSocketClientFactory.getInstance()
         val bus = project.messageBus
-        bus.connect().subscribe(WebSocketInterface.CONNECTED_TOPIC, webSocketImpl)
+        bus.connect().subscribe(WebSocketOperation.CONNECTED_TOPIC, webSocketClient)
 
         val label = JLabel("Hello World!")
 
@@ -60,7 +46,7 @@ class MainToolWindowFactory : ToolWindowFactory {
 
         val closeButton = JButton("close")
         closeButton.addActionListener({
-            webSocketImpl.close()
+            webSocketClient.close()
         })
 
         val jPanel = JPanel()

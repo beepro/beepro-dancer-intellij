@@ -3,8 +3,11 @@ package org.koiki.beepro.dancer.intellij.listener
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
+import org.koiki.beepro.dancer.intellij.websocket.WebSocketClientFactory
 import org.koiki.beepro.dancer.intellij.websocket.message.Change
 import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
+import org.koiki.beepro.dancer.intellij.websocket.message.JoinMessage
+import org.koiki.beepro.dancer.intellij.websocket.message.User
 
 class MyDocumentListener : DocumentListener {
     private val log = Logger.getInstance(this::class.java)
@@ -23,6 +26,9 @@ class MyDocumentListener : DocumentListener {
         val changeTo = Change(event, ChangeType.to)
         log.info("changeFrom row: ${changeFrom.row}, col: ${changeFrom.col}")
         log.info("changeTo   row: ${changeTo.row}, col: ${changeTo.col}")
+
+        val webSocketClient = WebSocketClientFactory.getInstance()
+        webSocketClient.sendMessage(JoinMessage(user = User(id = "1", icon = "aaa")))
     }
 
     override fun documentChanged(event: DocumentEvent) {

@@ -2,9 +2,9 @@ package org.koiki.beepro.dancer.intellij.websocket
 
 import com.intellij.util.messages.Topic
 
-interface WebSocketInterface {
+interface WebSocketOperation {
     companion object {
-        val CONNECTED_TOPIC: Topic<WebSocketInterface> = Topic.create("custom name", WebSocketInterface::class.java)
+        val CONNECTED_TOPIC: Topic<WebSocketOperation> = Topic.create("custom name", WebSocketOperation::class.java)
     }
 
     fun connect(uri: String)
