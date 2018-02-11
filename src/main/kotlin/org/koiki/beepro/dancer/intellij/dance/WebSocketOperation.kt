@@ -1,13 +1,17 @@
 package org.koiki.beepro.dancer.intellij.dance
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.intellij.openapi.command.WriteCommandAction
 import org.glassfish.tyrus.client.ClientManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiDocumentManager
+import com.intellij.psi.PsiManager
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
 import org.koiki.beepro.dancer.intellij.dance.message.Message
 import org.koiki.beepro.dancer.intellij.dance.message.User
+import org.koiki.beepro.dancer.intellij.listener.MyDocumentListenerFactory
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
@@ -67,6 +71,38 @@ class WebSocketOperation : DanceOperation {
     @OnMessage
     override fun onMessage(message: String) {
         log.info("message got, ${message}")
+
+        project.baseDir
+        project.basePath
+        project.projectFile
+        project.projectFilePath
+
+        log.info("project.baseDir: ${project.baseDir}" +
+                " project.basePath: ${project.basePath}" +
+                " project.projectFile: ${project.projectFile}" +
+                " project.projectFilePath: ${project.projectFilePath}")
+
+        // baseDir: "file://${project_home}"
+        val vFile = project.baseDir.findFileByRelativePath("src/main/kotlin/org/koiki/beepro/dancer/intellij/test/test.txt")
+        log.info("this is updated target vFile: ${vFile}")
+
+        if (vFile != null) {
+            WriteCommandAction.runWriteCommandAction(project, Runnable {
+                val psiFile = PsiManager.getInstance(project).findFile(vFile)
+                log.info("update target psiFile: ${psiFile}")
+                if (psiFile != null) {
+                    val targetDocument = PsiDocumentManager.getInstance(project).getDocument(psiFile)
+
+                    targetDocument?.removeDocumentListener(MyDocumentListenerFactory.getInstance())
+
+                    // insertString() overwrites text so replaceString is fine
+                    targetDocument?.replaceString(0, 0, "inserted by dancer\n")
+
+                    targetDocument?.addDocumentListener(MyDocumentListenerFactory.getInstance())
+                    log.info("document updated by dancer")
+                }
+            });
+        }
     }
 
     @OnClose
