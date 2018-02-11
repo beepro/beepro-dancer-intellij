@@ -1,8 +1,6 @@
 package org.koiki.beepro.dancer.intellij.listener
 
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.event.DocumentEvent
-import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -10,8 +8,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
-import org.koiki.beepro.dancer.intellij.websocket.message.Change
-import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
 
 class MyFileEditorManagerListener : FileEditorManagerListener {
     private val log = Logger.getInstance(this::class.java)

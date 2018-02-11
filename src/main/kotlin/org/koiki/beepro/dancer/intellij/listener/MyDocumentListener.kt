@@ -3,11 +3,11 @@ package org.koiki.beepro.dancer.intellij.listener
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
-import org.koiki.beepro.dancer.intellij.websocket.WebSocketClientFactory
-import org.koiki.beepro.dancer.intellij.websocket.message.Change
-import org.koiki.beepro.dancer.intellij.websocket.message.ChangeType
-import org.koiki.beepro.dancer.intellij.websocket.message.JoinMessage
-import org.koiki.beepro.dancer.intellij.websocket.message.User
+import org.koiki.beepro.dancer.intellij.dance.DanceOperationFactory
+import org.koiki.beepro.dancer.intellij.dance.message.Change
+import org.koiki.beepro.dancer.intellij.dance.message.ChangeType
+import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
+import org.koiki.beepro.dancer.intellij.dance.message.User
 
 class MyDocumentListener : DocumentListener {
     private val log = Logger.getInstance(this::class.java)
@@ -27,7 +27,7 @@ class MyDocumentListener : DocumentListener {
         log.info("changeFrom row: ${changeFrom.row}, col: ${changeFrom.col}")
         log.info("changeTo   row: ${changeTo.row}, col: ${changeTo.col}")
 
-        val webSocketClient = WebSocketClientFactory.getInstance()
+        val webSocketClient = DanceOperationFactory.getInstance()
         webSocketClient.sendMessage(JoinMessage(user = User(id = "1", icon = "aaa")))
     }
 

@@ -1,4 +1,4 @@
-package org.koiki.beepro.dancer.intellij.websocket.message
+package org.koiki.beepro.dancer.intellij.dance.message
 
 /**
  * 2018-02-05 23:19:47,371 [  52348]   INFO - ellij.ui.MainToolWindowFactory - beforeDocumentChange, event: DocumentEventImpl[myOffset=3, myOldLength=3, myNewLength=2, myOldString='222', myNewString='11'].

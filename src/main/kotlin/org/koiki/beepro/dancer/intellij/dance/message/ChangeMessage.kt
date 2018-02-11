@@ -1,7 +1,6 @@
-package org.koiki.beepro.dancer.intellij.websocket.message
+package org.koiki.beepro.dancer.intellij.dance.message
 
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.event.DocumentEvent
 
 class Change {

@@ -1,4 +1,4 @@
-package org.koiki.beepro.dancer.intellij.websocket.message
+package org.koiki.beepro.dancer.intellij.dance.message
 
 data class JoinMessage(val user: User) : Message() {
     val type = Type.join

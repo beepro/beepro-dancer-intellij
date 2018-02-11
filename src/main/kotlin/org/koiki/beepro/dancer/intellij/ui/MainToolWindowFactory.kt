@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import org.koiki.beepro.dancer.intellij.websocket.WebSocketOperation
+import org.koiki.beepro.dancer.intellij.dance.DanceOperation
 import java.awt.Color
 import java.awt.Font
 import javax.swing.JButton
@@ -15,7 +15,7 @@ import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.util.containers.stream
 import org.koiki.beepro.dancer.intellij.listener.MyFileEditorManagerListener
-import org.koiki.beepro.dancer.intellij.websocket.WebSocketClientFactory
+import org.koiki.beepro.dancer.intellij.dance.DanceOperationFactory
 
 
 class MainToolWindowFactory : ToolWindowFactory {
@@ -32,9 +32,11 @@ class MainToolWindowFactory : ToolWindowFactory {
         val messageBus = project.messageBus
         messageBus.connect().subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, MyFileEditorManagerListener(project))
 
-        val webSocketClient = WebSocketClientFactory.getInstance()
+        val danceOperation = DanceOperationFactory
+                .init(project)
+                .getInstance()
         val bus = project.messageBus
-        bus.connect().subscribe(WebSocketOperation.CONNECTED_TOPIC, webSocketClient)
+        bus.connect().subscribe(DanceOperation.CONNECTED_TOPIC, danceOperation)
 
         val label = JLabel("Hello World!")
 
@@ -46,7 +48,7 @@ class MainToolWindowFactory : ToolWindowFactory {
 
         val closeButton = JButton("close")
         closeButton.addActionListener({
-            webSocketClient.close()
+            danceOperation.close()
         })
 
         val jPanel = JPanel()
