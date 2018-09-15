@@ -34,8 +34,6 @@ class WebSocketOperation : DanceOperation {
 
         val websocketUri = URI(uri)
         val client = ClientManager.createClient()
-        //val container = ContainerProvider.getWebSocketContainer()
-        //container.connectToServer(this, websocketUri)
         client.connectToServer(this, websocketUri)
 
         sendMessage(JoinMessage(user = User(id = "ninja", icon = "hoge.png")))
