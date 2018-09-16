@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlin_version = '1.2.70'
+    ext.jackson_version = '2.9.6'
     repositories {
         mavenCentral()
     }
@@ -34,22 +35,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    //compile 'javax.websocket:javax.websocket-client-api:1.0'
-    //compile 'org.glassfish.tyrus:tyrus-client:1.1'
-    //compile 'org.glassfish.tyrus:tyrus-container-grizzly:1.1'
-    //compile 'javax.json:javax.json-api:1.0'
-    //compile 'org.glassfish:javax.json:1.0.1'
+    compile "javax.websocket:javax.websocket-client-api:1.1"
+    compile "org.glassfish.tyrus.bundles:tyrus-standalone-client:1.12"
 
-    compile 'javax.websocket:javax.websocket-client-api:1.1'
-    //compile group: 'org.glassfish.tyrus.bundles', name: 'websocket-ri-bundle', version: '1.13.1'
-    compile group: 'org.glassfish.tyrus.bundles', name: 'tyrus-standalone-client', version: '1.12'
-
-    //compile group: 'org.glassfish.tyrus', name: 'tyrus-container-grizzly', version: '1.2.1'
-    //compile group: 'org.glassfish.tyrus', name: 'tyrus-client', version: '1.13.1'
-
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.4'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.4'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.4'
-
+    compile "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    compile "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
 }

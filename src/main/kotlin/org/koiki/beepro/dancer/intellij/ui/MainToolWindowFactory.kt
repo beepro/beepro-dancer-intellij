@@ -16,14 +16,14 @@ import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.util.containers.stream
 import org.koiki.beepro.dancer.intellij.listener.MyFileEditorManagerListener
 import org.koiki.beepro.dancer.intellij.dance.DanceOperationFactory
+import org.koiki.beepro.dancer.intellij.ui.button.ConnectButtonListener
+import org.koiki.beepro.dancer.intellij.ui.button.DisconnectButtonListener
 
 
 class MainToolWindowFactory : ToolWindowFactory {
     private val log = Logger.getInstance(this::class.java)
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        log.info("factory starts")
-
         log.info("project.workspaceFile: ${project.workspaceFile}")
 
         // fetching all opened files when idea starts up
@@ -35,7 +35,7 @@ class MainToolWindowFactory : ToolWindowFactory {
         val danceOperation = DanceOperationFactory
                 .init(project)
                 .getInstance()
-        val bus = project.messageBus
+        val bus = messageBus
         bus.connect().subscribe(DanceOperation.CONNECTED_TOPIC, danceOperation)
 
         val label = JLabel("Hello World!")
@@ -47,9 +47,7 @@ class MainToolWindowFactory : ToolWindowFactory {
         button.addActionListener(ConnectButtonListener(textField, project))
 
         val closeButton = JButton("close")
-        closeButton.addActionListener({
-            danceOperation.close()
-        })
+        closeButton.addActionListener(DisconnectButtonListener(danceOperation))
 
         val jPanel = JPanel()
         jPanel.add(label)

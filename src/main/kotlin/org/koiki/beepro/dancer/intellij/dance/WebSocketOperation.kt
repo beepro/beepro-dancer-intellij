@@ -1,13 +1,14 @@
 package org.koiki.beepro.dancer.intellij.dance
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.intellij.openapi.command.WriteCommandAction
-import org.glassfish.tyrus.client.ClientManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.intellij.util.concurrency.AppExecutorUtil
+import org.glassfish.tyrus.client.ClientManager
 import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
 import org.koiki.beepro.dancer.intellij.dance.message.Message
 import org.koiki.beepro.dancer.intellij.dance.message.User
@@ -15,26 +16,22 @@ import org.koiki.beepro.dancer.intellij.listener.MyDocumentListenerFactory
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
-import javax.websocket.OnMessage
 
 @ClientEndpoint
-class WebSocketOperation : DanceOperation {
-    private val log = Logger.getInstance(this::class.java)
-    private val objectMapper = ObjectMapper()
-    private val project: Project
+class WebSocketOperation(
+        private val project: Project
+) : DanceOperation {
 
-    constructor(project: Project) {
-        this.project = project
-    }
+    private val log = Logger.getInstance(this::class.java)
+
+    private val objectMapper = ObjectMapper().registerModule(KotlinModule())
 
     private var session: Session? = null
 
-    override fun connect(uri: String) {
+    override fun connect(uri: URI) {
         log.info("I got notification by clicking button!, value: $uri")
 
-        val websocketUri = URI(uri)
-        val client = ClientManager.createClient()
-        client.connectToServer(this, websocketUri)
+        ClientManager.createClient().connectToServer(this, uri)
 
         sendMessage(JoinMessage(user = User(id = "ninja", icon = "hoge.png")))
 
