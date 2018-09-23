@@ -12,7 +12,7 @@ import org.glassfish.tyrus.client.ClientManager
 import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
 import org.koiki.beepro.dancer.intellij.dance.message.Message
 import org.koiki.beepro.dancer.intellij.dance.message.User
-import org.koiki.beepro.dancer.intellij.listener.MyDocumentListenerFactory
+import org.koiki.beepro.dancer.intellij.listener.MyDocumentListener
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
@@ -88,12 +88,12 @@ class WebSocketOperation(
                 if (psiFile != null) {
                     val targetDocument = PsiDocumentManager.getInstance(project).getDocument(psiFile)
 
-                    targetDocument?.removeDocumentListener(MyDocumentListenerFactory.getInstance())
+                    targetDocument?.removeDocumentListener(MyDocumentListener(project))
 
                     // insertString() overwrites text so replaceString is fine
                     targetDocument?.replaceString(0, 0, "inserted by dancer\n")
 
-                    targetDocument?.addDocumentListener(MyDocumentListenerFactory.getInstance())
+                    targetDocument?.addDocumentListener(MyDocumentListener(project))
                     log.info("document updated by dancer")
                 }
             });
