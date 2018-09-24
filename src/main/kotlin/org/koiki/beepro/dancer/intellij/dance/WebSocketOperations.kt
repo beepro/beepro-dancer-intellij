@@ -2,25 +2,20 @@ package org.koiki.beepro.dancer.intellij.dance
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.intellij.openapi.command.WriteCommandAction
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiDocumentManager
-import com.intellij.psi.PsiManager
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.glassfish.tyrus.client.ClientManager
-import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
-import org.koiki.beepro.dancer.intellij.dance.message.Message
-import org.koiki.beepro.dancer.intellij.dance.message.User
-import org.koiki.beepro.dancer.intellij.listener.MyDocumentListener
+import org.koiki.beepro.dancer.intellij.dance.message.*
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
 
 @ClientEndpoint
-class WebSocketOperation(
+class WebSocketOperations(
         private val project: Project
-) : DanceOperation {
+) : DanceOperations {
 
     private val log = Logger.getInstance(this::class.java)
 
@@ -65,38 +60,20 @@ class WebSocketOperation(
 
     @OnMessage
     override fun onMessage(message: String) {
-        log.info("message got, ${message}")
+        log.info("message got, $message")
 
-        project.baseDir
-        project.basePath
-        project.projectFile
-        project.projectFilePath
-
-        log.info("project.baseDir: ${project.baseDir}" +
-                " project.basePath: ${project.basePath}" +
-                " project.projectFile: ${project.projectFile}" +
-                " project.projectFilePath: ${project.projectFilePath}")
-
-        // baseDir: "file://${project_home}"
-        val vFile = project.baseDir.findFileByRelativePath("src/main/kotlin/org/koiki/beepro/dancer/intellij/test/test.txt")
-        log.info("this is updated target vFile: ${vFile}")
-
-        if (vFile != null) {
-            WriteCommandAction.runWriteCommandAction(project, Runnable {
-                val psiFile = PsiManager.getInstance(project).findFile(vFile)
-                log.info("update target psiFile: ${psiFile}")
-                if (psiFile != null) {
-                    val targetDocument = PsiDocumentManager.getInstance(project).getDocument(psiFile)
-
-                    targetDocument?.removeDocumentListener(MyDocumentListener(project))
-
-                    // insertString() overwrites text so replaceString is fine
-                    targetDocument?.replaceString(0, 0, "inserted by dancer\n")
-
-                    targetDocument?.addDocumentListener(MyDocumentListener(project))
-                    log.info("document updated by dancer")
-                }
-            });
+        if (message != "KEEPALIVE") {
+            val messageMapObj: Map<String, Any> = try {
+                objectMapper.readValue(message)
+            } catch (e: Exception) {
+                log.error(e.message)
+                throw e
+            }
+            when (messageMapObj["type"] as String) {
+                MessageType.change.name ->
+                    FileOperations.changeFile(objectMapper.readValue(message), project)
+                else -> log.info("unknown message")
+            }
         }
     }
 

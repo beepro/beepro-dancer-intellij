@@ -4,9 +4,9 @@ import com.intellij.util.messages.Topic
 import org.koiki.beepro.dancer.intellij.dance.message.Message
 import java.net.URI
 
-interface DanceOperation {
+interface DanceOperations {
     companion object {
-        val CONNECTED_TOPIC: Topic<DanceOperation> = Topic.create("custom name", DanceOperation::class.java)
+        val CONNECTED_TOPIC: Topic<DanceOperations> = Topic.create("custom name", DanceOperations::class.java)
     }
 
     fun connect(uri: URI)

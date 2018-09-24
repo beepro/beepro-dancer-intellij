@@ -16,7 +16,7 @@ class MyDocumentListener(
 
     override fun beforeDocumentChange(event: DocumentEvent) {
         //TODO null handling
-        val vFile: VirtualFile = FileDocumentManager.getInstance().getFile(event.document)!!;
+        val vFile: VirtualFile = FileDocumentManager.getInstance().getFile(event.document)!!
 
         DanceOperationFactory.getInstance()
                 .sendMessage(ChangeMessage(project, vFile, event))

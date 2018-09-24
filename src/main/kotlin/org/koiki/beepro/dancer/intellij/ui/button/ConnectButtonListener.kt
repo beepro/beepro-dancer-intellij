@@ -1,7 +1,7 @@
 package org.koiki.beepro.dancer.intellij.ui.button
 
 import com.intellij.openapi.project.Project
-import org.koiki.beepro.dancer.intellij.dance.DanceOperation
+import org.koiki.beepro.dancer.intellij.dance.DanceOperations
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.net.URI
@@ -14,7 +14,7 @@ class ConnectButtonListener(
 ) : ActionListener {
 
     override fun actionPerformed(e: ActionEvent?) = project.messageBus
-            .syncPublisher(DanceOperation.CONNECTED_TOPIC)
+            .syncPublisher(DanceOperations.CONNECTED_TOPIC)
             .connect(toUri(textField.text))
 
     private fun toUri(uri: String): URI =

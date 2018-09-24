@@ -4,7 +4,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import org.koiki.beepro.dancer.intellij.dance.DanceOperation
+import org.koiki.beepro.dancer.intellij.dance.DanceOperations
 import java.awt.Color
 import java.awt.Font
 import javax.swing.JButton
@@ -36,7 +36,7 @@ class MainToolWindowFactory : ToolWindowFactory {
                 .init(project)
                 .getInstance()
         val bus = messageBus
-        bus.connect().subscribe(DanceOperation.CONNECTED_TOPIC, danceOperation)
+        bus.connect().subscribe(DanceOperations.CONNECTED_TOPIC, danceOperation)
 
         val label = JLabel("Hello World!")
 
