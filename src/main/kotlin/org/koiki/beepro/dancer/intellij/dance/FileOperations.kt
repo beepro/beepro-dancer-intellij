@@ -13,16 +13,23 @@ object FileOperations {
     private val log = Logger.getInstance(this::class.java)
 
     fun changeFile(message: ChangeMessage, project: Project) {
-        val document: Document = findDocument(message.path, project)
-
         WriteCommandAction.runWriteCommandAction(project) {
+            val document: Document = findDocument(message.path, project)
+
+            val offset = document.getLineStartOffset(message.change.from.row) + message.change.from.col
+
+            //TODO infinite loop happens because we could not make listener disable correctly.
             document.removeDocumentListener(MyDocumentListener(project))
             // insertString() overwrites text so replaceString is fine
-            document.replaceString(0, 0, "inserted by dancer\n")
+            document.replaceString(offset, offset, message.change.text)
             document.addDocumentListener(MyDocumentListener(project))
         }
     }
 
+    /**
+     * This method should be invoked from an implementation of Runnable.class otherwise we will get blow error log.
+     * "Read access is allowed from event dispatch thread or inside read-action only"
+     */
     //TODO error handling
     private fun findDocument(fileRelativePath: String, project: Project): Document {
         val vFile = project.baseDir.findFileByRelativePath(fileRelativePath)!!

@@ -19,7 +19,7 @@ class MyDocumentListener(
         val vFile: VirtualFile = FileDocumentManager.getInstance().getFile(event.document)!!
 
         DanceOperationFactory.getInstance()
-                .sendMessage(ChangeMessage(project, vFile, event))
+                .sendMessage(ChangeMessage.create(project, vFile, event))
     }
 
     override fun documentChanged(event: DocumentEvent) {

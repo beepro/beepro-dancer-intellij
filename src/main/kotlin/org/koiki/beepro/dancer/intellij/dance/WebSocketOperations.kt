@@ -1,5 +1,6 @@
 package org.koiki.beepro.dancer.intellij.dance
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -7,7 +8,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.util.concurrency.AppExecutorUtil
 import org.glassfish.tyrus.client.ClientManager
-import org.koiki.beepro.dancer.intellij.dance.message.*
+import org.koiki.beepro.dancer.intellij.dance.message.JoinMessage
+import org.koiki.beepro.dancer.intellij.dance.message.Message
+import org.koiki.beepro.dancer.intellij.dance.message.MessageType
+import org.koiki.beepro.dancer.intellij.dance.message.User
 import java.net.URI
 import java.util.concurrent.TimeUnit
 import javax.websocket.*
@@ -19,7 +23,9 @@ class WebSocketOperations(
 
     private val log = Logger.getInstance(this::class.java)
 
-    private val objectMapper = ObjectMapper().registerModule(KotlinModule())
+    private val objectMapper = ObjectMapper()
+            .registerModule(KotlinModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
     private var session: Session? = null
 
@@ -69,10 +75,14 @@ class WebSocketOperations(
                 log.error(e.message)
                 throw e
             }
-            when (messageMapObj["type"] as String) {
-                MessageType.change.name ->
-                    FileOperations.changeFile(objectMapper.readValue(message), project)
-                else -> log.info("unknown message")
+            try {
+                when (messageMapObj["type"] as String) {
+                    MessageType.change.name ->
+                        FileOperations.changeFile(objectMapper.readValue(message), project)
+                    else -> log.info("unknown message")
+                }
+            } catch (e: Exception) {
+                log.error(e.message, e)
             }
         }
     }

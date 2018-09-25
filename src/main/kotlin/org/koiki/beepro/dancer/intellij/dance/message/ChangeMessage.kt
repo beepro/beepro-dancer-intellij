@@ -11,16 +11,16 @@ data class ChangeMessage(
 ) : Message (
         type = type
 ) {
-    constructor(
-            project: Project,
-            vFile: VirtualFile,
-            event: DocumentEvent
-    ) : this(
-            path = vFile.path.replace(oldValue = project.basePath.toString() + "/", newValue = ""),
-            change = Change(
-                    from = ChangeFromTo(event, ChangeType.from),
-                    to = ChangeFromTo(event, ChangeType.to),
-                    text = event.newFragment.toString()
-            )
-    )
+
+    companion object {
+        fun create(
+                project: Project,
+                vFile: VirtualFile,
+                event: DocumentEvent
+        ): ChangeMessage =
+                ChangeMessage(
+                        path = vFile.path.replace(oldValue = project.basePath.toString() + "/", newValue = ""),
+                        change = Change.create(event)
+                )
+    }
 }
